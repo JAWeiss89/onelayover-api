@@ -1,0 +1,20 @@
+{
+  "name": "onelayover-api",
+  "version": "1.0.0",
+  "description": "RESTful API supporting all CRUD functionality for onelayover application",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Jorge Weiss",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonschema": "^1.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "pg": "^8.5.1"
+  }
+}
