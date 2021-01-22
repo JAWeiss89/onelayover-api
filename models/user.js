@@ -10,7 +10,7 @@ class User {
     // getAll => returns array of all users with username, first_name, last_name, and email
     static async getAll() {
         const userResults = await db.query(
-            `SELECT username, first_name, last_name, email FROM users)`
+            `SELECT username, first_name, last_name, email FROM users`
         );
         const users = userResults.rows;
         return users;
@@ -62,7 +62,7 @@ class User {
     static async delete(username) {
         const results = await db.query(
             `DELETE FROM users WHERE username = $1 RETURNING username`, [username]
-        )
+        );
         if (results.rows.length === 0) {
             throw new ExpressError(`Could not find user with username ${username}`)
         }
