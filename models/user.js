@@ -87,6 +87,70 @@ class User {
         }
     }
 
+    static async likeCommentToggle(commentID, userID) {
+        const time = new Date();
+        const timeStamp = time.toString().slice(0, 33);
+        const results = await db.query(`SELECT * FROM comment_likes WHERE comment_id = $1 AND user_id = $2`, [commentID, userID]);
+        const alreadyLiked = results.rows[0]; // alreadyLiked will be undefined if no record of the like
+        if (alreadyLiked) { // if comment has been already liked, "unlike" by removing like from database
+            const deletedResults = await db.query(
+                `DELETE FROM comment_likes WHERE comment_id = $1 AND user_id = $2 RETURNING id`
+                [commmentID, userID]
+            )
+            return deletedResults.rows[0];
+        } else {
+            const likedResults = await db.query(
+                `INSERT INTO comment_likes (comment_id, user_id, timestamp)
+                 VALUES ($1, $2, $3)`
+                 [commentID, userID, timeStamp]
+            )
+            return likedResults.rows[0];
+        }
+    }
+    
+    static async likePhotoToggle(photoID, userID) {
+        const time = new Date();
+        const timeStamp = time.toString().slice(0, 33);
+        const results = await db.query(`SELECT * FROM photo_likes WHERE photo_id = $1 AND user_id = $2`, [photoID, userID]);
+        const alreadyLiked = results.rows[0]; // alreadyLiked will be undefined if no record of the like
+        if (alreadyLiked) { // if photo has been already liked, "unlike" by removing like from database
+            const deletedResults = await db.query(
+                `DELETE FROM photo_likes WHERE photo_id = $1 AND user_id = $2 RETURNING id`
+                [photoID, userID]
+            )
+            return deletedResults.rows[0];
+        } else {
+            const likedResults = await db.query(
+                `INSERT INTO photo_likes (photo_id, user_id, timestamp)
+                 VALUES ($1, $2, $3)`
+                 [photoID, userID, timeStamp]
+            )
+            return likedResults.rows[0];
+        }
+        
+    }
+    
+    static async likeActivityToggle(activityID, userID) {
+        const time = new Date();
+        const timeStamp = time.toString().slice(0, 33);
+        const results = await db.query(`SELECT * FROM activity_likes WHERE activity_id = $1 AND user_id = $2`, [activityID, userID]);
+        const alreadyLiked = results.rows[0]; // alreadyLiked will be undefined if no record of the like
+        if (alreadyLiked) { // if activity has been already liked, "unlike" by removing like from database
+            const deletedResults = await db.query(
+                `DELETE FROM activity_likes WHERE activity_id = $1 AND user_id = $2 RETURNING id`
+                [activityID, userID]
+            )
+            return deletedResults.rows[0];
+        } else { // else add like to database
+            const likedResults = await db.query(
+                `INSERT INTO activity_likes (activity_id, user_id, timestamp)
+                 VALUES ($1, $2, $3)`
+                 [activityID, userID, timeStamp]
+            )
+            return likedResults.rows[0];
+        }
+    }
+
 }
 
 module.exports = User;

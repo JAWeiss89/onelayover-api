@@ -41,6 +41,7 @@ class Comment {
 
     // updateComment => updates comment. Data can have whatever keys/values that are valid and wish to be updated
     static async updateComment(commentID, commentData) {
+        
         const { query, values } = partialUpdate("comments", commentData, "id", commentID);
         
         const results = await db.query(query, values);
