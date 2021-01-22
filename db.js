@@ -1,4 +1,4 @@
-// establish connection between app and databse using pg library
+// Use pg library to establish connection between our application and database
 
 const { Client } = require("pg");
 const { DB_URI} = require("./config");
