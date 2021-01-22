@@ -3,7 +3,6 @@ const ExpressError = require("../helpers/expressError");
 const partialUpdate = require("../helpers/partialUpdate");
 
 class Activity {
-    // change layover id to layover code
     static async getLayoverActivities(layoverCode) {
         const activityResults = await db.query(
             `SELECT author_id, layover_code, type_id, title, description, body, average_rating
@@ -27,7 +26,7 @@ class Activity {
     static async createActivity(newActivityObj) {
         // authentication required
         const {author_id, layover_code, type_id, address, title, description, body, average_rating} = newActivityObj;
-        ;
+        
         const results = await db.query(
             `INSERT INTO activities (author_id, layover_code, type_id, address, title, description, body, average_rating)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
@@ -58,3 +57,5 @@ class Activity {
     }
     
 }
+
+module.exports = Activity;

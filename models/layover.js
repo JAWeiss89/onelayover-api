@@ -63,3 +63,5 @@ class Layover {
         return results.rows[0];
     }
 }
+
+module.exports = Layover;
