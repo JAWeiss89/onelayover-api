@@ -55,7 +55,31 @@ class Activity {
         }
         return results.rows[0];
     }
+
+    static async addActivityType(activityType) {
+        // Requires admin
+        const results = await db.query(
+            `INSERT INTO activity_types (type) VALUES ($1)`, [activityType]
+        )
+        if (results.rows.length === 0) {
+            throw new ExpressError("Unable to add activity type");
+        }
+
+        return results.rows[0];
+    }
     
+    static async deleteActivityType(activityType) {
+        // Requires admin
+        const results = await db.query(
+            `DELETE FROM activity_types WHERE type = $1 RETURNING id`,
+            [activityType]
+        )
+        if (results.rows.length === 0) {
+            throw new ExpressError("Unable to delete activity type");
+        }
+
+        return results.rows[0];
+    }
 }
 
 module.exports = Activity;

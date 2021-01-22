@@ -30,7 +30,7 @@ class User {
     }
 
     // create => creates new user. Requires values for username, password, first_name, last_name, email and is_admin
-    static async create(newUserObj) {
+    static async createUser(newUserObj) {
         // inserts user into database and returns token
         const { username, password, first_name, last_name, email, is_admin } = newUserObj;
         const hashedPassword = await bcrypt.hash(password, 12);
@@ -58,8 +58,8 @@ class User {
         return results.rows[0];
     }
 
-    // delete => deletes user instance in database. Returns 404 if no such user with given username
-    static async delete(username) {
+    // deleteUser => deletes user instance in database. Returns 404 if no such user with given username
+    static async deleteUser(username) {
         const results = await db.query(
             `DELETE FROM users WHERE username = $1 RETURNING username`, [username]
         );

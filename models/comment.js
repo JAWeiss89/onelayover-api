@@ -51,8 +51,8 @@ class Comment {
         return results.rows[0];
     }
 
-    // delete => deletes comment. Returns 404 if no such comment exists in db
-    static async delete(commentID) {
+    // deleteComment => deletes comment. Returns 404 if no such comment exists in db
+    static async deleteComment(commentID) {
         const results = await db.query(
             `DELETE FROM comments WHERE id = $1 RETURNING title`, [commentID]
         );

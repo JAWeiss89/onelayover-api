@@ -28,7 +28,7 @@ class Layover {
 
     // create => creates new layover. Requires values for city_name, layover_code, country_name, description, currency, intl, main_img_url, thumbnail_url
     // returns newly created layover
-    static async create(newLayoverObj) {
+    static async createLayover(newLayoverObj) {
         // admin required
         const {city_name, layover_code, country_name, description, currency, intl, main_img_url, thumbnail_url} = newLayoverObj;
         const result = await db.query(
