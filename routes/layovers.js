@@ -1,6 +1,9 @@
 const express = require("express");
 const ExpressError = require("../helpers/expressError");
 const Layover = require("../models/layover");
+const jsonschema = require("jsonschema");
+const editLayoverSchema = require("../schemas/editLayover.json");
+const newLayoverSchema = require("../schemas/newLayover.json");
 // const {ensureLoggedIn, ensureSameUser} = require("../middleware/auth");
 
 const router = new express.Router();
@@ -28,16 +31,17 @@ router.get("/:layoverCode", async function (req, res, next) {
 
 router.post("/", async function(req, res, next) {
     // TO-DO: require auth middleware
-    // TO-DO: add jsonschema for validation of request
-
+   // route expects layover in body with values for the following fields:
+   // layover_code, city_name, country_name, description, currency ("3 char code"), international(t/f), main_img_url, thumbnail_url
     try {
         const layoverData = req.body.layover;
-        const validationResults = {valid: true} // use jsonschema here
+        const validationResults = jsonschema.validate(layoverData, newLayoverSchema);
         if (!validationResults.valid) { // if json can't be validated
             const errors = validationResults.errors.map(error => error.stack);
-            throw new ExpressError(errors); // double check errors print as intended
+            throw new ExpressError(errors, 400); // double check errors print as intended
         }
         const layover = await Layover.createLayover(layoverData);
+        
         return res.status(201).json({layover});
     } catch(err) {
         next(err);
@@ -47,16 +51,19 @@ router.post("/", async function(req, res, next) {
 
 router.patch("/:layoverCode", async function(req, res, next) {
     // TO-DO: require auth middleware && require admin middleware
-    // TO-DO: add jsonschema for validation of request
+    // route expects layover in body as json with values for any of the following fields:
+    // layover_code, city_name, country_name, description, currency ("3 char code"), international(t/f), main_img_url, thumbnail_url
+
     try {
         const { layoverCode } = req.params;
         const layoverData = req.body.layover; 
-        const validationResults = {valid: true} // use jsonschema here
+        const validationResults = jsonschema.validate(layoverData, editLayoverSchema);
         if (!validationResults.valid) { // if json can't be validated
             const errors = validationResults.errors.map(error => error.stack);
             throw new ExpressError(errors); // add invalid request error code
         }
         const layover = await Layover.updateLayover(layoverCode, layoverData);
+        
         return res.json({layover})
     } catch(err) {
         next(err);
