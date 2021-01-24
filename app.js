@@ -12,10 +12,12 @@ const userRoutes = require("./routes/users");
 const layoverRoutes = require("./routes/layovers");
 const activityRoutes = require("./routes/activities");
 const authRoutes = require("./routes/auth");
+const commentRoutes = require("./routes/comments");
 
-app.use("/users/", userRoutes);
-app.use("/layovers/", layoverRoutes);
-app.use("/layovers/", activityRoutes);
+app.use("/users", userRoutes);
+app.use("/layovers", layoverRoutes);
+app.use("/layovers", activityRoutes);
+app.use("/", commentRoutes);
 app.use("/", authRoutes);  // double check this
 
 // add logging system
