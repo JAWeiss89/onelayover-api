@@ -35,7 +35,7 @@ router.post("/", async function(req, res, next) {
         const validationResults = {valid: true} // use jsonschema here
         if (!validationResults.valid) { // if json can't be validated
             const errors = validationResults.errors.map(error => error.stack);
-            throw new ExpressError(errors, 404); // double check errors print as intended
+            throw new ExpressError(errors); // double check errors print as intended
         }
         const layover = await Layover.createLayover(layoverData);
         return res.status(201).json({layover});
@@ -48,14 +48,13 @@ router.post("/", async function(req, res, next) {
 router.patch("/:layoverCode", async function(req, res, next) {
     // TO-DO: require auth middleware && require admin middleware
     // TO-DO: add jsonschema for validation of request
-
     try {
         const { layoverCode } = req.params;
         const layoverData = req.body.layover; 
         const validationResults = {valid: true} // use jsonschema here
         if (!validationResults.valid) { // if json can't be validated
             const errors = validationResults.errors.map(error => error.stack);
-            throw new ExpressError(errors, 404); // double check errors print as intended
+            throw new ExpressError(errors); // add invalid request error code
         }
         const layover = await Layover.updateLayover(layoverCode, layoverData);
         return res.json({layover})
@@ -66,7 +65,6 @@ router.patch("/:layoverCode", async function(req, res, next) {
 
 router.delete("/:layoverCode", async function(req, res, next) {
     // TO-DO: require auth middleware && require admin middleware
-    // TO-DO: add jsonschema for validation of request
 
     try {
         const { layoverCode } = req.params;
