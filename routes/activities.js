@@ -1,6 +1,9 @@
 const express = require("express");
 const ExpressError = require("../helpers/expressError");
 const Activity  = require("../models/activity");
+const jsonschema = require("jsonschema");
+const editActivitySchema = require("../schemas/editActivity.json");
+const newActivitySchema = require("../schemas/newActivity.json");
 
 const router = new express.Router();
 
@@ -31,29 +34,32 @@ router.get("/:layoverCode/activities/:id", async function(req, res, next) {
 
 router.post("/:layoverCode/activities", async function(req, res, next) {
     // TO-DO: require auth middleware
-    // TO-DO: add jsonschema for validation of request
+    // route expects activity in body as json with values for the following fields:
+    // author_id(int), layover_code, type_id(int), address, title, description, body
     try {
         const activityData = req.body.activity;
-        const validationResults = {valid: true} // replace with jsonschema verification
+        const validationResults = jsonschema.validate(activityData, newActivitySchema);
         if (!validationResults.valid) {
             const errors = validationResults.erros.map(error => error.stack);
-            throw new ExpressError(errors) // add invalid request error code
+            throw new ExpressError(errors, 400) // add invalid request error code
         }
         const activity = Activity.createActivity(activityData);
-        return res.json({activity});
+        return res.status(201).json({activity});
     } catch(err) {
         next(err);
     }
 });
 
 router.patch("/:layoverCode/activities/:id", async function(req, res, next) {
+    // route expects user in body as json with values for any of the following fields:
+    // author_id(int), layover_code, type_id(int), address, title, description, body
     try {
         const { id } = req.params;
         const activityData = req.body.activity;
-        const validationResults = {valid: true} // replace with jsonschema verification
+        const validationResults = jsonschema.validate(activityData, editActivitySchema);
         if (!validationResults.valid) {
             const errors = validationResults.erros.map(error => error.stack);
-            throw new ExpressError(errors) // add invalid request error code
+            throw new ExpressError(errors, 400) // add invalid request error code
         }
         const activity = await Activity.updateActivity(id, activityData)
         return res.json({activity})

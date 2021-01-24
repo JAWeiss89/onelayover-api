@@ -1,0 +1,101 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "author_id": 123,
+            "layover_code": "ABC",
+            "type_id": 345,
+            "address": "321 Main St, Austin, TX 78705",
+            "title": "Statue of Liberty",
+            "description": "Statue in Liberty Island",
+            "body": "A really nice opportunity to see..."
+        }
+    ],
+    "required": [
+        "author_id",
+        "layover_code",
+        "type_id",
+        "address",
+        "title",
+        "description",
+        "body"
+    ],
+    "properties": {
+        "author_id": {
+            "$id": "#/properties/author_id",
+            "type": "integer",
+            "title": "The author_id schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                123
+            ]
+        },
+        "layover_code": {
+            "$id": "#/properties/layover_code",
+            "type": "string",
+            "title": "The layover_code schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "ABC"
+            ]
+        },
+        "type_id": {
+            "$id": "#/properties/type_id",
+            "type": "integer",
+            "title": "The type_id schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                345
+            ]
+        },
+        "address": {
+            "$id": "#/properties/address",
+            "type": "string",
+            "title": "The address schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "321 Main St, Austin, TX 78705"
+            ]
+        },
+        "title": {
+            "$id": "#/properties/title",
+            "type": "string",
+            "title": "The title schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Statue of Liberty"
+            ]
+        },
+        "description": {
+            "$id": "#/properties/description",
+            "type": "string",
+            "title": "The description schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "Statue in Liberty Island"
+            ]
+        },
+        "body": {
+            "$id": "#/properties/body",
+            "type": "string",
+            "title": "The body schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "A really nice opportunity to see..."
+            ]
+        }
+    },
+    "additionalProperties": true
+}
