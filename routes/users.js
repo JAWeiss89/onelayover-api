@@ -33,7 +33,7 @@ router.get("/:username", async function(req, res, next) {
 
 router.post("/", async function(req, res, next) {
     // route expects user in body as json with values for the following fields:
-    // username, password, first_name, last_name, email, created_at, airline
+    // username, password, first_name, last_name, email, airline
     try {
         const userData = req.body.user;
         const validationResults = jsonschema.validate(userData, newUserSchema);
@@ -61,7 +61,7 @@ router.patch("/:username", async function(req, res, next) {
             throw new ExpressError(errors, 400); // double check errors print as intended
         }
         const user = await User.updateUser(username, userData);
-
+        delete user.password;
         return res.json({user});
     } catch(err) {
         next(err);
@@ -71,9 +71,9 @@ router.patch("/:username", async function(req, res, next) {
 router.delete("/:username", async function(req, res, next) {
     try {
         const { username } = req.params;
-        const deletedUsername = await User.deleteUser(username);
+        const response = await User.deleteUser(username);
 
-        return res.json({message: `Successfully deleted user "${deletedUsername}"`});
+        return res.json({message: `Successfully deleted user ${response.username}`});
     } catch(err) {
         next(err);
     }

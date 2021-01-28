@@ -19,7 +19,7 @@ class User {
     // getOne => returns instance of one user with all data except for password
     static async getOne(username) {
         const userResult = await db.query(
-            `SELECT username, first_name, last_name, email, created_at, airline, favorite_layover
+            `SELECT username, first_name, last_name, email, created_at, airline
              FROM users
              WHERE username = $1`, [username]
         );
@@ -29,17 +29,20 @@ class User {
         return userResult.rows[0];
     }
 
-    // create => creates new user. Requires values for username, password, first_name, last_name, email and is_admin
+    // create => creates new user. Requires values for username, password, first_name, last_name, email, airline, and is_admin
     static async createUser(newUserObj) {
         // inserts user into database and returns token
-        const { username, password, first_name, last_name, email, is_admin } = newUserObj;
+        const { username, password, first_name, last_name, email, airline } = newUserObj;
+        let created_at = new Date();
+        created_at = String(created_at);
+        const is_admin = false;
         const hashedPassword = await bcrypt.hash(password, 12);
 
         const result = await db.query(
-            `INSERT INTO users (username, password, first_name, last_name, email, is_admin)
-             VALUES ($1, $2, $3, $4, $5, $6)
-             RETURNING username, first_name, last_name, email, is_admin`,
-             [username, hashedPassword, first_name, last_name, email, is_admin]
+            `INSERT INTO users (username, password, first_name, last_name, email, created_at, airline, is_admin)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+             RETURNING username, first_name, last_name, email, airline, is_admin`,
+             [username, hashedPassword, first_name, last_name, email, created_at, airline, is_admin]
         )
         const user = result.rows[0];
         let token = jwt.sign({username: user.username, is_admin: user.is_admin}, SECRET_KEY);
