@@ -12,28 +12,33 @@ class Comment {
         if (commentResults.rows.length === 0) {
             throw new ExpressError(`Could not find comments for activity with ID ${activityID}`, 404);
         }
-        return commentResults.rows[0]; 
+        return commentResults.rows; 
     }
 
     // getUserComments => returns array of all comments from user
     static async getUserComments(username) {
+        const userResults  = await db.query(`SELECT id FROM users where username = $1`, [username]);
+        if (userResults.rows.length === 0) {
+            throw new ExpressError(`Could not find user with username ${username}`)
+        }
+        const { id } = userResults.rows[0];
         const commentResults = await db.query(
-            `SELECT * FROM comments WHERE username = $1`, [username]
+            `SELECT * FROM comments WHERE author_id = $1`, [id]
         )
         if (commentResults.rows.length === 0) {
             throw new ExpressError(`Could not find comments for user with username ${username}`, 404);
         }
-        return commentResults.rows[0];         
+        return commentResults.rows;         
     }
 
     // createComment => posts new comment. All values are required to post
     static async createComment(newCommentObj) {
-        const { author_id, activity_id, created_at, title, body } = newCommentObj;
+        const { author_id, activity_id, created_at, body } = newCommentObj;
 
         const results = await db.query(
-            `INSERT INTO comments (author_id, activity_id, created_at, title, body)
-             VALUES $1, $2, $3, $4, $5`,
-             [author_id, activity_id, created_at, title, body]
+            `INSERT INTO comments (author_id, activity_id, created_at, body)
+             VALUES ($1, $2, $3, $4)`,
+             [author_id, activity_id, created_at, body]
         )
         const comment = results.rows[0];
         return comment;

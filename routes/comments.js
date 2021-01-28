@@ -8,7 +8,8 @@ router.get("/layovers/:layoverCode/activities/:activityID/comments", async funct
     // TO-DO: require auth middleware
     try {
         const { activityID } = req.params;
-        const comments = Comment.getActivityComments(activityID);
+        const comments = await Comment.getActivityComments(activityID);
+        
         
         return res.json({comments});
 
@@ -48,6 +49,8 @@ router.patch("/layovers/:layoverCode/activities/:activityID/comments/:id", async
     try {
         const { id } = req.params;
         const commentData = req.body.comment;
+        const validationResults = {valid: true} // replace with jsonschema verification
+
         if (!validationResults.valid) {
             const errors = validationResults.erros.map(error => error.stack);
             throw new ExpressError(errors) // add invalid request error code
@@ -69,3 +72,5 @@ router.delete("/layovers/:layoverCode/activities/:activityID/comments/:id", asyn
         next(err);
     }
 });
+
+module.exports = router;
