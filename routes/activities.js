@@ -7,12 +7,12 @@ const newActivitySchema = require("../schemas/newActivity.json");
 
 const router = new express.Router();
 
-router.get("/:layoverCode/activites", async function(req, res, next) {
+router.get("/:layoverCode/activities/", async function(req, res, next) {
     // TO-DO: require auth middleware
     try {
         const { layoverCode } = req.params; 
-        const activites = await Activity.getLayoverActivities(layoverCode);
-        return res.json({activites});
+        const activities = await Activity.getLayoverActivities(layoverCode);
+        return res.json({activities});
 
     } catch(err) {
         next(err);
@@ -32,7 +32,7 @@ router.get("/:layoverCode/activities/:id", async function(req, res, next) {
     }
 });
 
-router.post("/:layoverCode/activities", async function(req, res, next) {
+router.post("/:layoverCode/activities/", async function(req, res, next) {
     // TO-DO: require auth middleware
     // route expects activity in body as json with values for the following fields:
     // author_id(int), layover_code, type_id(int), address, title, description, body
@@ -40,11 +40,11 @@ router.post("/:layoverCode/activities", async function(req, res, next) {
         const activityData = req.body.activity;
         const validationResults = jsonschema.validate(activityData, newActivitySchema);
         if (!validationResults.valid) {
-            const errors = validationResults.erros.map(error => error.stack);
+            const errors = validationResults.errors.map(error => error.stack);
             throw new ExpressError(errors, 400) // add invalid request error code
         }
-        const activity = Activity.createActivity(activityData);
-        return res.status(201).json({activity});
+        await Activity.createActivity(activityData);
+        return res.status(201).json({message: `Successfuly created activity ${activityData.title}`});
     } catch(err) {
         next(err);
     }
@@ -71,8 +71,8 @@ router.patch("/:layoverCode/activities/:id", async function(req, res, next) {
 router.delete("/:layoverCode/activities/:id", async function(req, res, next) {
     try {
         const { id } = req.params;
-        const activity = await Activity.deleteActivity(id);
-        return res.json({message: `Successfuly deleted activity "${activity}"`});
+        const {title} = await Activity.deleteActivity(id);
+        return res.json({message: `Successfuly deleted activity ${title}`});
     } catch(err) {
         next(err);
     }

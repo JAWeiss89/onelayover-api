@@ -5,11 +5,13 @@ const partialUpdate = require("../helpers/partialUpdate");
 class Activity {
     static async getLayoverActivities(layoverCode) {
         const activityResults = await db.query(
-            `SELECT author_id, layover_code, type_id, title, description, body, average_rating
-             FROM layovers
-             WHERE layover_id = $1`, [layoverCode]
+            `SELECT id, author_id, layover_code, type_id, address, title, description, body
+             FROM activities
+             WHERE layover_code = $1`, [layoverCode]
         )
+        console.log({layoverCode})
         const activities = activityResults.rows;
+        console.log({activities})
         return activities;
     }
 
@@ -25,12 +27,12 @@ class Activity {
 
     static async createActivity(newActivityObj) {
         // authentication required
-        const {author_id, layover_code, type_id, address, title, description, body, average_rating} = newActivityObj;
+        const {author_id, layover_code, type_id, address, title, description, body} = newActivityObj;
         
         const results = await db.query(
-            `INSERT INTO activities (author_id, layover_code, type_id, address, title, description, body, average_rating)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-            [author_id, layover_code, type_id, address, title, description, body, average_rating]
+            `INSERT INTO activities (author_id, layover_code, type_id, address, title, description, body)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+            [author_id, layover_code, type_id, address, title, description, body]
         )
         const activity = results.rows[0];
         return activity;
