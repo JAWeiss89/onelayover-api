@@ -40,9 +40,9 @@ router.post("/", async function(req, res, next) {
             const errors = validationResults.errors.map(error => error.stack);
             throw new ExpressError(errors, 400); // double check errors print as intended
         }
-        const layover = await Layover.createLayover(layoverData);
+        await Layover.createLayover(layoverData);
         
-        return res.status(201).json({layover});
+        return res.status(201).json({message: `Layover ${layoverData.layover_code}/${layoverData.city_name} was successfully created`});
     } catch(err) {
         next(err);
     }
@@ -75,8 +75,8 @@ router.delete("/:layoverCode", async function(req, res, next) {
 
     try {
         const { layoverCode } = req.params;
-        const deletedCode = await Layover.deleteLayover(layoverCode);
-        return res.json({message: `Successfuly deleted layover ${deletedCode}`})
+        const response = await Layover.deleteLayover(layoverCode);
+        return res.json({message: `Successfuly deleted layover ${response.layover_code}`})
     } catch(err) {
         next(err);
     }

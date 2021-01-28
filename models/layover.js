@@ -30,12 +30,13 @@ class Layover {
     // returns newly created layover
     static async createLayover(newLayoverObj) {
         // admin required
-        const {city_name, layover_code, country_name, description, currency, intl, main_img_url, thumbnail_url} = newLayoverObj;
+        const {city_name, layover_code, country_name, description, currency, international, main_img_url, thumbnail_url} = newLayoverObj;
         const result = await db.query(
-            `INSERT INTO layovers (city_name, layover_code, country_name, description, currency, intl, main_img_url, thumbnail_url)
+            `INSERT INTO layovers (city_name, layover_code, country_name, description, currency, international, main_img_url, thumbnail_url)
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-             [city_name, layover_code, country_name, description, currency, intl, main_img_url, thumbnail_url]
+             [city_name, layover_code, country_name, description, currency, international, main_img_url, thumbnail_url]
         )
+        console.log({result})
         const layover = result.rows[0];
         return layover;
     }
@@ -54,12 +55,13 @@ class Layover {
 
     // deleteLayover => deletes instance of layover that matches layoverCode. Returns 404 if no such layover with given layoverCode
     static async deleteLayover(layoverCode) {
-        const results = db.query(
+        const results = await db.query(
             `DELETE FROM layovers WHERE layover_code = $1 RETURNING layover_code`, [layoverCode]
         );
         if (results.rows.length === 0) {
             throw new ExpressError(`Could not find layover with layover code ${layoverCode}`, 404); 
         }
+        
         return results.rows[0];
     }
 }
