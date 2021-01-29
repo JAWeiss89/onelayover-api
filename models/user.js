@@ -19,7 +19,7 @@ class User {
     // getOne => returns instance of one user with all data except for password
     static async getOne(username) {
         const userResult = await db.query(
-            `SELECT username, first_name, last_name, email, created_at, airline
+            `SELECT id, username, first_name, last_name, email, created_at, airline
              FROM users
              WHERE username = $1`, [username]
         );
@@ -90,67 +90,74 @@ class User {
         }
     }
 
-    static async likeCommentToggle(commentID, userID) {
+    static async likeCommentToggle(commentID, username) {
+        const userResponse = await db.query(`SELECT id FROM users WHERE username = $1`, [username]);
+        const userID = userResponse.rows[0].id;
         const time = new Date();
-        const timeStamp = time.toString().slice(0, 33);
-        const results = await db.query(`SELECT * FROM comment_likes WHERE comment_id = $1 AND user_id = $2`, [commentID, userID]);
+        const createdAt = time.toString().slice(0, 33);
+        const results = await db.query(`SELECT * FROM comment_likes WHERE comment_id = $1 AND author_id = $2`, [commentID, userID]);
         const alreadyLiked = results.rows[0]; // alreadyLiked will be undefined if no record of the like
+        console.log({alreadyLiked});
         if (alreadyLiked) { // if comment has been already liked, "unlike" by removing like from database
-            const deletedResults = await db.query(
-                `DELETE FROM comment_likes WHERE comment_id = $1 AND user_id = $2 RETURNING id`
-                [commmentID, userID]
+            await db.query(
+                `DELETE FROM comment_likes WHERE comment_id = $1 AND author_id = $2 RETURNING id`,
+                [commentID, userID]
             )
-            return deletedResults.rows[0];
+            return `Comment ${commentID} was unliked by ${username}`;
         } else {
-            const likedResults = await db.query(
-                `INSERT INTO comment_likes (comment_id, user_id, timestamp)
-                 VALUES ($1, $2, $3)`
-                 [commentID, userID, timeStamp]
+            await db.query(
+                `INSERT INTO comment_likes (comment_id, author_id, created_at)
+                 VALUES ($1, $2, $3)`,
+                 [commentID, userID, createdAt]
             )
-            return likedResults.rows[0];
+            return `Comment ${commentID} was liked by ${username}`;
         }
     }
     
-    static async likePhotoToggle(photoID, userID) {
+    static async likePhotoToggle(photoID, username) {
+        const userResponse = await db.query(`SELECT id FROM users WHERE username = $1`, [username]);
+        const userID = userResponse.rows[0].id;
         const time = new Date();
-        const timeStamp = time.toString().slice(0, 33);
+        const createdAt = time.toString().slice(0, 33);
         const results = await db.query(`SELECT * FROM photo_likes WHERE photo_id = $1 AND user_id = $2`, [photoID, userID]);
         const alreadyLiked = results.rows[0]; // alreadyLiked will be undefined if no record of the like
         if (alreadyLiked) { // if photo has been already liked, "unlike" by removing like from database
-            const deletedResults = await db.query(
-                `DELETE FROM photo_likes WHERE photo_id = $1 AND user_id = $2 RETURNING id`
+            await db.query(
+                `DELETE FROM photo_likes WHERE photo_id = $1 AND author_id = $2 RETURNING id`,
                 [photoID, userID]
             )
-            return deletedResults.rows[0];
+            return `Photo ${photoID} was unliked by ${username}`;
         } else {
-            const likedResults = await db.query(
-                `INSERT INTO photo_likes (photo_id, user_id, timestamp)
-                 VALUES ($1, $2, $3)`
-                 [photoID, userID, timeStamp]
+            await db.query(
+                `INSERT INTO photo_likes (photo_id, author_id, created_at)
+                 VALUES ($1, $2, $3)`,
+                 [photoID, userID, createdAt]
             )
-            return likedResults.rows[0];
+            return `Photo ${photoID} was liked by ${username}`;
         }
         
     }
     
-    static async likeActivityToggle(activityID, userID) {
+    static async likeActivityToggle(activityID, username) {
+        const userResponse = await db.query(`SELECT id FROM users WHERE username = $1`, [username]);
+        const userID = userResponse.rows[0].id;
         const time = new Date();
-        const timeStamp = time.toString().slice(0, 33);
-        const results = await db.query(`SELECT * FROM activity_likes WHERE activity_id = $1 AND user_id = $2`, [activityID, userID]);
+        const createdAt = time.toString().slice(0, 33);
+        const results = await db.query(`SELECT * FROM activity_likes WHERE activity_id = $1 AND author_id = $2`, [activityID, userID]);
         const alreadyLiked = results.rows[0]; // alreadyLiked will be undefined if no record of the like
         if (alreadyLiked) { // if activity has been already liked, "unlike" by removing like from database
-            const deletedResults = await db.query(
-                `DELETE FROM activity_likes WHERE activity_id = $1 AND user_id = $2 RETURNING id`
+            await db.query(
+                `DELETE FROM activity_likes WHERE activity_id = $1 AND author_id = $2 RETURNING id`,
                 [activityID, userID]
             )
-            return deletedResults.rows[0];
+            return `Activity ${activityID} was unliked by ${username}`;
         } else { // else add like to database
-            const likedResults = await db.query(
-                `INSERT INTO activity_likes (activity_id, user_id, timestamp)
-                 VALUES ($1, $2, $3)`
-                 [activityID, userID, timeStamp]
+            await db.query(
+                `INSERT INTO activity_likes (activity_id, author_id, created_at)
+                 VALUES ($1, $2, $3)`,
+                 [activityID, userID, createdAt]
             )
-            return likedResults.rows[0];
+            return `Activity ${activityID} was liked by ${username}`;
         }
     }
 

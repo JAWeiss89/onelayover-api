@@ -79,4 +79,37 @@ router.delete("/:username", async function(req, res, next) {
     }
 });
 
+//  comment like/unlike
+router.post("/:username/comments/:commentID", async function(req, res, next) {
+    try {
+        const {username, commentID} = req.params;
+        const message = await User.likeCommentToggle(commentID, username);
+        return res.json({message});
+    } catch(err) {
+        next(err);
+    }
+});
+
+// photo like/unlike
+router.post("/:username/photos/:photoID", async function(req, res, next) {
+    try {
+        const {username, photoID} = req.params;
+        const message = await User.likePhotoToggle(photoID, username);
+        return res.json({message});
+    } catch(err) {
+        next(err);
+    }
+});
+
+//activity like/unlike
+router.post("/:username/activities/:activityID", async function(req, res, next) {
+    try {
+        const {username, activityID} = req.params;
+        const message = await User.likeActivityToggle(activityID, username);
+        return res.json({message});
+    } catch(err) {
+        next(err);
+    }
+});
+
 module.exports = router;

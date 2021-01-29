@@ -61,7 +61,7 @@ router.patch("/:layoverCode/activities/:id", async function(req, res, next) {
             const errors = validationResults.erros.map(error => error.stack);
             throw new ExpressError(errors, 400) // add invalid request error code
         }
-        const activity = await Activity.updateActivity(id, activityData)
+        const activity = await Activity.updateActivity(id, activityData);
         return res.json({activity})
     } catch(err) {
         next(err);
