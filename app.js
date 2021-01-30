@@ -6,7 +6,7 @@ const morgan = require("morgan");
 const app = express();
 
 app.use(express.json()); // Tells express we will be using JSON send/receive messages
-app.use(authenticateJWT);
+app.use(authenticateJWT); // All routes will check for the presence of a _token key in request
 
 const userRoutes = require("./routes/users");
 const layoverRoutes = require("./routes/layovers");
@@ -33,6 +33,7 @@ app.use(function(req, res, next) {
 // handle generic error
 
 app.use(function(err, req, res, next) {
+    // receives any errors thrown by previous routes and console logs in and returns it as json
     res.status(err.status || 500);
     console.log(err.stack);
 
