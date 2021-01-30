@@ -10,7 +10,7 @@ function authenticateJWT(req, res, next) {
             const payload = jwt.verify(token, SECRET_KEY); // Step where we verify the token
             req.user = payload; // since JWT has been verified, add JWT payload to user key in request
         }
-        return 
+        return next();
     } catch(err) {
         next(err);
     }
