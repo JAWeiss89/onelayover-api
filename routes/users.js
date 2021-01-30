@@ -4,11 +4,11 @@ const User = require("../models/user");
 const jsonschema = require("jsonschema");
 const editUserSchema = require("../schemas/editUser.json");
 const newUserSchema = require("../schemas/newUser.json");
-// const {ensureLoggedIn, ensureSameUser} = require("../middleware/auth");
+const { ensureLoggedIn, ensureAdmin, ensureSameUser } = require("../middleware/auth");
 
 const router = new express.Router();
 
-router.get("/", async function(req, res, next) {
+router.get("/", ensureLoggedIn, async function(req, res, next) {
     // TO-DO: require auth middleware && require admin middleware
 
     try {
@@ -20,7 +20,7 @@ router.get("/", async function(req, res, next) {
     }
 });
 
-router.get("/:username", async function(req, res, next) {
+router.get("/:username", ensureLoggedIn, async function(req, res, next) {
     try {
         const { username } = req.params;
         const user = await User.getOne(username);
@@ -49,7 +49,7 @@ router.post("/", async function(req, res, next) {
     }
 });
 
-router.patch("/:username", async function(req, res, next) {
+router.patch("/:username", ensureLoggedIn, ensureSameUser, async function(req, res, next) {
     // route expects user in body as json with values for any of the following fields:
     // username, password, first_name, last_name, email, airline
     try {
@@ -68,7 +68,7 @@ router.patch("/:username", async function(req, res, next) {
     }
 });
 
-router.delete("/:username", async function(req, res, next) {
+router.delete("/:username", ensureLoggedIn, ensureSameUser, async function(req, res, next) {
     try {
         const { username } = req.params;
         const response = await User.deleteUser(username);
@@ -80,7 +80,7 @@ router.delete("/:username", async function(req, res, next) {
 });
 
 //  comment like/unlike
-router.post("/:username/comments/:commentID", async function(req, res, next) {
+router.post("/:username/comments/:commentID", ensureLoggedIn, ensureSameUser, async function(req, res, next) {
     try {
         const {username, commentID} = req.params;
         const message = await User.likeCommentToggle(commentID, username);
@@ -91,7 +91,7 @@ router.post("/:username/comments/:commentID", async function(req, res, next) {
 });
 
 // photo like/unlike
-router.post("/:username/photos/:photoID", async function(req, res, next) {
+router.post("/:username/photos/:photoID", ensureLoggedIn, ensureSameUser, async function(req, res, next) {
     try {
         const {username, photoID} = req.params;
         const message = await User.likePhotoToggle(photoID, username);
@@ -102,7 +102,7 @@ router.post("/:username/photos/:photoID", async function(req, res, next) {
 });
 
 //activity like/unlike
-router.post("/:username/activities/:activityID", async function(req, res, next) {
+router.post("/:username/activities/:activityID", ensureLoggedIn, ensureSameUser, async function(req, res, next) {
     try {
         const {username, activityID} = req.params;
         const message = await User.likeActivityToggle(activityID, username);
