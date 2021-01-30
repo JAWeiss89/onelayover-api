@@ -8,9 +8,13 @@ const { ensureLoggedIn, ensureAdmin, ensureSameUser } = require("../middleware/a
 
 const router = new express.Router();
 
-router.get("/", ensureLoggedIn, async function(req, res, next) {
-    // TO-DO: require auth middleware && require admin middleware
 
+// ==========================================================
+// TO-DO: Route to create a new user with admin capabilities
+// ==========================================================
+
+router.get("/", ensureLoggedIn, ensureAdmin, async function(req, res, next) {
+    // route expects _token in body of request
     try {
         const users = await User.getAll();
         
@@ -21,6 +25,7 @@ router.get("/", ensureLoggedIn, async function(req, res, next) {
 });
 
 router.get("/:username", ensureLoggedIn, async function(req, res, next) {
+    // route expects _token in body of request
     try {
         const { username } = req.params;
         const user = await User.getOne(username);
@@ -32,7 +37,8 @@ router.get("/:username", ensureLoggedIn, async function(req, res, next) {
 });
 
 router.post("/", async function(req, res, next) {
-    // route expects user in body as json with values for the following fields:
+    // route does not require token because user is signing up for the first time
+    // route expects user in body of request as json with values for the following fields:
     // username, password, first_name, last_name, email, airline
     try {
         const userData = req.body.user;
@@ -50,7 +56,8 @@ router.post("/", async function(req, res, next) {
 });
 
 router.patch("/:username", ensureLoggedIn, ensureSameUser, async function(req, res, next) {
-    // route expects user in body as json with values for any of the following fields:
+    // route expects user and _token in body of request as json
+    // user in body can have any of the following fields:
     // username, password, first_name, last_name, email, airline
     try {
         const { username } = req.params;
@@ -69,6 +76,7 @@ router.patch("/:username", ensureLoggedIn, ensureSameUser, async function(req, r
 });
 
 router.delete("/:username", ensureLoggedIn, ensureSameUser, async function(req, res, next) {
+    // route expects _token in body of request as json
     try {
         const { username } = req.params;
         const response = await User.deleteUser(username);
@@ -81,6 +89,7 @@ router.delete("/:username", ensureLoggedIn, ensureSameUser, async function(req, 
 
 //  comment like/unlike
 router.post("/:username/comments/:commentID", ensureLoggedIn, ensureSameUser, async function(req, res, next) {
+    // route expects _token in body of request as json
     try {
         const {username, commentID} = req.params;
         const message = await User.likeCommentToggle(commentID, username);
@@ -92,6 +101,7 @@ router.post("/:username/comments/:commentID", ensureLoggedIn, ensureSameUser, as
 
 // photo like/unlike
 router.post("/:username/photos/:photoID", ensureLoggedIn, ensureSameUser, async function(req, res, next) {
+    // route expects _token in body of request as json
     try {
         const {username, photoID} = req.params;
         const message = await User.likePhotoToggle(photoID, username);
@@ -103,6 +113,7 @@ router.post("/:username/photos/:photoID", ensureLoggedIn, ensureSameUser, async 
 
 //activity like/unlike
 router.post("/:username/activities/:activityID", ensureLoggedIn, ensureSameUser, async function(req, res, next) {
+    // route expects _token in body of request as json
     try {
         const {username, activityID} = req.params;
         const message = await User.likeActivityToggle(activityID, username);
