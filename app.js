@@ -1,12 +1,12 @@
 const express = require("express");
-// const {authenticateJWT} = require("./middleware/auth");
+const {authenticateJWT} = require("./middleware/auth");
 const ExpressError = require("./helpers/expressError");
 
 const morgan = require("morgan");
 const app = express();
 
 app.use(express.json()); // Tells express we will be using JSON send/receive messages
-// app.use(authenticateJWT);
+app.use(authenticateJWT);
 
 const userRoutes = require("./routes/users");
 const layoverRoutes = require("./routes/layovers");
@@ -25,7 +25,7 @@ app.use(morgan("tiny"));
 
 // handle 404
 app.use(function(req, res, next) {
-    const err = new ExpressError("Not Found", 404);
+    const err = new ExpressError("Page Not Found", 404);
     // pass the error to next piece of middleware
     return next(err);
 });

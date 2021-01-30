@@ -41,9 +41,9 @@ router.post("/", async function(req, res, next) {
             const errors = validationResults.errors.map(error => error.stack);
             throw new ExpressError(errors, 400); // double check errors print as intended
         }
-        const user = await User.createUser(userData);
+        const token = await User.createUser(userData); 
 
-        return res.status(201).json({user})
+        return res.status(201).json({token})
     } catch(err) {
         next(err);
     }
