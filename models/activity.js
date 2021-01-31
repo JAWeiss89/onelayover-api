@@ -38,7 +38,11 @@ class Activity {
         return activity;
     }
 
-    static async  updateActivity(activityID, activityData) {
+    static async  updateActivity(activityID, userID, activityData) {
+        // the following two lines help ensure only the user that is requesting to update is the original author of activity
+        const activityResult = await db.query(`SELECT * FROM activities WHERE id = $1, author_id = $2`, [activityID, userID]);
+        if (activityResult.rows.length === 0) throw new ExpressError(`Could not find activity with ID ${activityID} and authorID ${userID}`, 404);
+
         const { query, values } = partialUpdate("activities", activityData, "id", activityID)
 
         const results = await db.query(query, values);
@@ -48,12 +52,12 @@ class Activity {
         return results.rows[0];
     }
     
-    static async deleteActivity(activityID) {
+    static async deleteActivity(activityID, userID) {
         const results = await db.query(
-            `DELETE FROM activities WHERE id = $1 RETURNING title`, [activityID]
+            `DELETE FROM activities WHERE id = $1 AND author_id = $2 RETURNING title`, [activityID, userID]
         )
         if (results.rows.length===0) {
-            throw new ExpressError(`Could not find activity with id ${activityID}`, 404);
+            throw new ExpressError(`Could not find activity with id ${activityID} and authorID ${userID}`, 404);
         }
         return results.rows[0];
     }

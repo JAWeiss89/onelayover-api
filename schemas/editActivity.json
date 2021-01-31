@@ -7,7 +7,6 @@
     "default": {},
     "examples": [
         {
-            "author_id": 123,
             "layover_code": "ABC",
             "type_id": 345,
             "address": "321 Main St, Austin, TX 78705",
@@ -18,16 +17,6 @@
     ],
     "required": [],
     "properties": {
-        "author_id": {
-            "$id": "#/properties/author_id",
-            "type": "integer",
-            "title": "The author_id schema",
-            "description": "An explanation about the purpose of this instance.",
-            "default": 0,
-            "examples": [
-                123
-            ]
-        },
         "layover_code": {
             "$id": "#/properties/layover_code",
             "type": "string",
