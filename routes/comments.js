@@ -8,12 +8,6 @@ const commentSchema = require("../schemas/comment.json");
 
 const router = new express.Router();
 
-
-// ==========================================================
-// TO-DO: does ensureSameUser work appropriately 
-// 
-// ==========================================================
-
 router.get("/layovers/:layoverCode/activities/:activityID/comments", ensureLoggedIn, async function(req, res, next) {
     
     try {
@@ -40,7 +34,7 @@ router.get("/users/:userID/comments", ensureLoggedIn, async function(req, res, n
 
 router.post("/layovers/:layoverCode/activities/:activityID/comments", ensureLoggedIn, ensureSameUser,  async function(req, res, next) {
     // Route expects three things to be passed in request json body:
-    // 1) userID: "user123"   (to compare incoming request to userID in token. This id will also be used as author id of comment)
+    // 1) userID: "123"   (to compare incoming request to userID in token. This id will also be used as author id of comment)
     // 2) comment: {"body": "this is my comment"}
     // 3) _token: "mytoken.aa.cc"     (for authentication)
     try {

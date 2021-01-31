@@ -4,8 +4,7 @@ const Activity  = require("../models/activity");
 const jsonschema = require("jsonschema");
 const editActivitySchema = require("../schemas/editActivity.json");
 const newActivitySchema = require("../schemas/newActivity.json");
-const { ensureLoggedIn, ensureAdmin, ensureSameUser} = require("../middleware/auth");
-const { user } = require("../db");
+const { ensureLoggedIn, ensureSameUser} = require("../middleware/auth");
 
 const router = new express.Router();
 

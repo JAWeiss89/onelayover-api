@@ -4,7 +4,7 @@ const Layover = require("../models/layover");
 const jsonschema = require("jsonschema");
 const editLayoverSchema = require("../schemas/editLayover.json");
 const newLayoverSchema = require("../schemas/newLayover.json");
- const {ensureLoggedIn, ensureSameUser, ensureAdmin} = require("../middleware/auth");
+ const {ensureLoggedIn, ensureAdmin} = require("../middleware/auth");
 
 const router = new express.Router();
 
