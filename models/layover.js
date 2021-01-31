@@ -1,7 +1,4 @@
 const db = require("../db");
-// const bcrypt = require("bcrypt");
-// const jwt = require("jsonwebtoken");
-// const { SECRET_KEY } = require("../config");
 const ExpressError = require("../helpers/expressError");
 const partialUpdate = require("../helpers/partialUpdate");
 
