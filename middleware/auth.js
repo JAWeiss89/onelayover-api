@@ -35,7 +35,7 @@ function ensureAdmin(req, res, next) {
 };
 
 function ensureSameUser(req, res, next) {
-    if (req.user.username === req.params.username) {
+    if (req.user.id === req.params.userID || req.user.id === req.body.userID) {
         return next();
     } else {
         const incorrectUserErr = new ExpressError("You are not authorized to modify this user", 401);
