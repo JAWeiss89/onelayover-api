@@ -4,12 +4,11 @@ const Layover = require("../models/layover");
 const jsonschema = require("jsonschema");
 const editLayoverSchema = require("../schemas/editLayover.json");
 const newLayoverSchema = require("../schemas/newLayover.json");
-// const {ensureLoggedIn, ensureSameUser} = require("../middleware/auth");
+ const {ensureLoggedIn, ensureSameUser, ensureAdmin} = require("../middleware/auth");
 
 const router = new express.Router();
 
-router.get("/", async function(req, res, next) {
-    // TO-DO: require auth middleware
+router.get("/", ensureLoggedIn, async function(req, res, next) {
     try {
         const layovers = await Layover.getAll();
         return res.json({layovers});
@@ -18,8 +17,7 @@ router.get("/", async function(req, res, next) {
     }
 });
 
-router.get("/:layoverCode", async function (req, res, next) {
-    // TO-DO: require auth middleware
+router.get("/:layoverCode", ensureLoggedIn, async function (req, res, next) {
     try {
         const { layoverCode } = req.params; 
         const layover = await Layover.getOne(layoverCode);
@@ -29,8 +27,7 @@ router.get("/:layoverCode", async function (req, res, next) {
     }
 });
 
-router.post("/", async function(req, res, next) {
-    // TO-DO: require auth middleware
+router.post("/", ensureLoggedIn, ensureAdmin, async function(req, res, next) {
    // route expects layover in body with values for the following fields:
    // layover_code, city_name, country_name, description, currency ("3 char code"), international(t/f), main_img_url, thumbnail_url
     try {
@@ -49,8 +46,7 @@ router.post("/", async function(req, res, next) {
 
 });
 
-router.patch("/:layoverCode", async function(req, res, next) {
-    // TO-DO: require auth middleware && require admin middleware
+router.patch("/:layoverCode", ensureLoggedIn, ensureAdmin, async function(req, res, next) {
     // route expects layover in body as json with values for any of the following fields:
     // layover_code, city_name, country_name, description, currency ("3 char code"), international(t/f), main_img_url, thumbnail_url
 
@@ -70,8 +66,7 @@ router.patch("/:layoverCode", async function(req, res, next) {
     }
 });
 
-router.delete("/:layoverCode", async function(req, res, next) {
-    // TO-DO: require auth middleware && require admin middleware
+router.delete("/:layoverCode", ensureLoggedIn, ensureAdmin, async function(req, res, next) {
 
     try {
         const { layoverCode } = req.params;
