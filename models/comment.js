@@ -16,25 +16,27 @@ class Comment {
     }
 
     // getUserComments => returns array of all comments from user
-    static async getUserComments(username) {
-        const userResults  = await db.query(`SELECT id FROM users where username = $1`, [username]);
-        if (userResults.rows.length === 0) {
-            throw new ExpressError(`Could not find user with username ${username}`)
-        }
-        const { id } = userResults.rows[0];
+    static async getUserComments(userID) {
+        const userResults  = await db.query(`SELECT id FROM users where id = $1`, [userID]);
+        if (userResults.rows.length === 0) throw new ExpressError(`Could not find user with id ${userID}.`, 404)
+        
         const commentResults = await db.query(
-            `SELECT * FROM comments WHERE author_id = $1`, [id]
+            `SELECT * FROM comments WHERE author_id = $1`, [userID]
         )
         if (commentResults.rows.length === 0) {
-            throw new ExpressError(`Could not find comments for user with username ${username}`, 404);
+            throw new ExpressError(`Could not find comments for user with id ${userID}`, 404);
         }
         return commentResults.rows;         
     }
 
     // createComment => posts new comment. All values are required to post
     static async createComment(newCommentObj) {
-        const { author_id, activity_id, created_at, body } = newCommentObj;
-
+        const { username, activity_id, body } = newCommentObj;
+        const time = new Date();
+        const created_at = time.toString().slice(0, 33);
+        const userResponse = await db.query(`SELECT id FROM users WHERE username = $1`, [username]);
+        if (userResponse.rows.length === 0) throw new ExpressError(`Could not find user with username ${username}`, 404);
+        const author_id = userResponse.rows[0].id;
         const results = await db.query(
             `INSERT INTO comments (author_id, activity_id, created_at, body)
              VALUES ($1, $2, $3, $4)`,
@@ -57,12 +59,12 @@ class Comment {
     }
 
     // deleteComment => deletes comment. Returns 404 if no such comment exists in db
-    static async deleteComment(commentID) {
+    static async deleteComment(commentID, userID) {
         const results = await db.query(
-            `DELETE FROM comments WHERE id = $1 RETURNING title`, [commentID]
+            `DELETE FROM comments WHERE id = $1 and author_id = $2 RETURNING title`, [commentID, userID]
         );
         if (results.rows.length === 0) {
-            throw new ExpressError(`Could not find comment with ID ${commentID}`, 404);
+            throw new ExpressError(`Could not find comment with ID ${commentID} with userID ${userID}`, 404);
         }
         return results.rows[0];
     }
