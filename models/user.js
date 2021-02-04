@@ -44,9 +44,10 @@ class User {
              [username, hashedPassword, first_name, last_name, email, created_at, airline, is_admin]
         )
         const user = result.rows[0];
-        let token = jwt.sign({id: user.id, is_admin: user.is_admin}, SECRET_KEY);
+        const userID = user.id;
+        let token = jwt.sign({id: userID, is_admin: user.is_admin}, SECRET_KEY);
         
-        return token;
+        return {token, userID};
     }
 
     // updateUser => updates user. userData can have any parameters that are desired to be updated
@@ -80,7 +81,8 @@ class User {
         if (user) {
             if (await bcrypt.compare(password, user.password)) {
                 let token = jwt.sign({id: user.id, is_admin}, SECRET_KEY);
-                return token;
+                let userID = user.id;
+                return {token, userID};
             } else {
                 throw new ExpressError("Could not authenticate user");
             }
