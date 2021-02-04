@@ -6,6 +6,18 @@ const cors = require("cors");
 const morgan = require("morgan");
 const app = express();
 
+// The following can be used to allow certain sites access by CORS
+// var whitelist = ['http://example1.com', 'http://example2.com']
+// var corsOptions = {
+//   origin: function (origin, callback) {
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true)
+//     } else {
+//       callback(new Error('Not allowed by CORS'))
+//     }
+//   }
+// }
+
 app.use(cors()); // Controls Same origin policy
 app.use(express.json()); // Tells express we will be using JSON send/receive messages
 app.use(authenticateJWT); // All routes will check for the presence of a _token key in request
