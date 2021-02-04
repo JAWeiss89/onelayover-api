@@ -2,9 +2,11 @@ const express = require("express");
 const {authenticateJWT} = require("./middleware/auth");
 const ExpressError = require("./helpers/expressError");
 
+const cors = require("cors");
 const morgan = require("morgan");
 const app = express();
 
+app.use(cors()); // Controls Same origin policy
 app.use(express.json()); // Tells express we will be using JSON send/receive messages
 app.use(authenticateJWT); // All routes will check for the presence of a _token key in request
 
