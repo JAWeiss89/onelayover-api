@@ -5,10 +5,24 @@ const ExpressError = require("../helpers/expressError");
 function authenticateJWT(req, res, next) {
     // this will run on every route
     try {
+        console.log("===================================")
+        console.log("Looking for token...");
+        console.log("req.body:", req.body);
+        console.log("req.headers:", req.headers);
         if (req.body._token) {  // if user is sending token in request,
+            console.log("_token found in request body!");
+            ("===================================");
             const token = req.body._token;
             const payload = jwt.verify(token, SECRET_KEY); // Step where we verify the token
             req.user = payload; // since JWT has been verified, add JWT payload to user key in request
+        } else if (req.headers._token) {
+            console.log("_token found in headers!");
+            const token = req.headers._token;
+            const payload = jwt.verify(token, SECRET_KEY); // Step where we verify the token
+            req.user = payload; // since JWT has been verified, add JWT payload to user key in request
+        } else {
+            console.log("_token not found in request body nor in params");
+            ("===================================")
         }
         return next();
     } catch(err) {
