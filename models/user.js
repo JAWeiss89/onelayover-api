@@ -75,10 +75,10 @@ class User {
     // authenticate => returns token if correct password and username. Throws 404 if cant find user, throws 500 if unable to authenticate
     static async authenticate(username, password) {
         const userResults = await db.query(`SELECT * FROM users WHERE username=$1`, [username]);
-        const user = userResults[0];
-        const is_admin = user.is_admin;
-
+        const user = userResults.rows[0];
+    
         if (user) {
+            const is_admin = user.is_admin;
             if (await bcrypt.compare(password, user.password)) {
                 let token = jwt.sign({id: user.id, is_admin}, SECRET_KEY);
                 let userID = user.id;
