@@ -31,12 +31,10 @@ class Comment {
 
     // createComment => posts new comment. All values are required to post
     static async createComment(newCommentObj) {
-        const { username, activity_id, body } = newCommentObj;
+        const { author_id, activity_id, body } = newCommentObj;
         const time = new Date();
         const created_at = time.toString().slice(0, 33);
-        const userResponse = await db.query(`SELECT id FROM users WHERE username = $1`, [username]);
-        if (userResponse.rows.length === 0) throw new ExpressError(`Could not find user with username ${username}`, 404);
-        const author_id = userResponse.rows[0].id;
+
         const results = await db.query(
             `INSERT INTO comments (author_id, activity_id, created_at, body)
              VALUES ($1, $2, $3, $4)`,

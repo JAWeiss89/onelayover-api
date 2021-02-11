@@ -27,11 +27,13 @@ const layoverRoutes = require("./routes/layovers");
 const activityRoutes = require("./routes/activities");
 const authRoutes = require("./routes/auth");
 const commentRoutes = require("./routes/comments");
+const activityPhotos = require("./routes/photos");
 
 app.use("/users", userRoutes);
 app.use("/layovers", layoverRoutes);
 app.use("/layovers", activityRoutes);
 app.use("/", commentRoutes);
+app.use("/", activityPhotos);
 app.use("/", authRoutes);  // double check this
 
 // add logging system

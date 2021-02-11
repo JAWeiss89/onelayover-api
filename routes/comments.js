@@ -3,7 +3,7 @@ const ExpressError = require("../helpers/expressError");
 const Comment = require("../models/comment");
 const jsonschema = require("jsonschema");
 const commentSchema = require("../schemas/comment.json");
- const { ensureLoggedIn, ensureSameUser } = require("../middleware/auth");
+const { ensureLoggedIn, ensureSameUser } = require("../middleware/auth");
  
 
 const router = new express.Router();
@@ -40,14 +40,14 @@ router.post("/layovers/:layoverCode/activities/:activityID/comments", ensureLogg
     try {
         if (!req.body.userID) throw new ExpressError("Did not receive value for userID in request body")
         const commentData = req.body.comment;
-        const validationResults = jsonschema.validate(commentData, newCommentSchema);
+        const validationResults = jsonschema.validate(commentData, commentSchema);
         if (!validationResults.valid) {
             const errors = validationResults.erros.map(error => error.stack);
             throw new ExpressError(errors) // add invalid request error code
         }
 
         commentData.activity_id = Number(req.params.activityID);
-        commentData.user_id = Number(req.body.userID);
+        commentData.author_id = Number(req.body.userID);
         // commentData should now have values for user_id, activity_id, and body
         
         const comment = await Comment.createComment(commentData);
@@ -85,7 +85,7 @@ router.delete("/layovers/:layoverCode/activities/:activityID/comments/:id", ensu
     // 2) _token: "mytoken.bbb.ccc"   (for authentication)
     try {
         const { id } = req.params;
-        const { userID } = req.body.userID;
+        const { userID } = req.body;
         const commentTitle = await Comment.deleteComment(id, userID);
 
         return res.json({message: `Successfully deleted layover "${commentTitle}"`});
