@@ -38,6 +38,7 @@ router.post("/:layoverCode/activities/", ensureLoggedIn, ensureSameUser, async f
     // 3) _token: "mytoken.aa.cc"     (for authentication)
     try {
         const activityData = req.body.activity;
+        activityData.type_id = Number(activityData.type_id);
         activityData.author_id = Number(req.body.userID);
         activityData.layover_code = req.params.layoverCode;
         const validationResults = jsonschema.validate(activityData, newActivitySchema);

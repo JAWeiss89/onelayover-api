@@ -3,8 +3,9 @@ const ExpressError = require("../helpers/expressError");
 
 class ActivityPhoto {
     static async getActivityPhotos(activityID) {
+
         const photoResults = await db.query (
-            `SELECT * FROM activity_photos WHERE activity_id`, [activityID]
+            `SELECT * FROM activity_photos WHERE activity_id = $1`, [activityID]
         )
         if (photoResults.rows.length === 0) {
             throw new ExpressError(`Could not find photos for activity with ID ${activityID}`, 404);

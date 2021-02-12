@@ -7,11 +7,11 @@ const ActivityPhoto = require("../models/activityPhoto");
 
 const router = new express.Router();
 
-router.get("/layovers//layovers/:layoverCode/activities/:activityID/photos", ensureLoggedIn, async function(req, res, next) {
+router.get("/layovers/:layoverCode/activities/:activityID/photos", ensureLoggedIn, async function(req, res, next) {
     try {
         const { activityID } = req.params;
         const photos = await ActivityPhoto.getActivityPhotos(activityID);
-
+        console.log({photos})
         return res.json({photos});
 
     } catch(err) {
