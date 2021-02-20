@@ -67,7 +67,7 @@ router.patch("/layovers/:layoverCode/activities/:activityID/comments/:id", ensur
         if (!req.body.userID) throw new ExpressError("Did not receive value for userID in request body")
         const { id } = req.params;
         const commentData = req.body.comment;
-        const validationResults = jsonschema.validate(commentData, editCommentSchema);
+        const validationResults = jsonschema.validate(commentData, commentSchema);
         if (!validationResults.valid) {
             const errors = validationResults.erros.map(error => error.stack);
             throw new ExpressError(errors) // add invalid request error code
