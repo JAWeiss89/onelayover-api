@@ -17,6 +17,9 @@ CREATE TABLE layovers (
     country_name TEXT NOT NULL,
     description TEXT NOT NULL,
     currency VARCHAR(3) NOT NULL,
+    language VARCHAR(18) NOT NULL,
+    police INTEGER NOT NULL,
+    ambulance INTEGER NOT NULL,
     international BOOLEAN NOT NULL DEFAULT TRUE,
     main_img_url TEXT,
     thumbnail_url TEXT
