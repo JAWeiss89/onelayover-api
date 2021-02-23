@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000; // if running on local machine, use port 
 
 let DB_URI;
 if (process.env.NODE_ENV === "test") { // if intesting environment,
-    DB_URI = "onelayover-test"; // use test database called "onelayover-test"
+    DB_URI = "onelayover_test"; // use test database called "onelayover-test"
 } else {
     // otherwise use database specified in deployed env variable or local app database called "onelayover"
     DB_URI = process.send.DATABASE_URL || "onelayover"; 
