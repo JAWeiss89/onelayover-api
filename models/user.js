@@ -67,7 +67,7 @@ class User {
             `DELETE FROM users WHERE id = $1 RETURNING id`, [userID]
         );
         if (results.rows.length === 0) {
-            throw new ExpressError(`Could not find user with id ${userID}`)
+            throw new ExpressError(`Could not find user with id ${userID}`, 404);
         }
         return results.rows[0];
     }
