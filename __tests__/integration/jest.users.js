@@ -233,9 +233,9 @@ afterEach(async () => {
     await db.query(`DELETE FROM users WHERE username='jorgito'`);
     await db.query(`DELETE FROM users WHERE username='sarita111'`);
 
-})
+});
 
 afterAll(async function() {
     // close db connection
     await db.end();
-})
+});
