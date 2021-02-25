@@ -27,13 +27,13 @@ class Layover {
     // returns newly created layover
     static async createLayover(newLayoverObj) {
         // admin required
-        const {city_name, layover_code, country_name, description, currency, international, main_img_url, thumbnail_url} = newLayoverObj;
+        const {city_name, layover_code, country_name, description, currency, language, police, ambulance, international, main_img_url, thumbnail_url} = newLayoverObj;
         const result = await db.query(
-            `INSERT INTO layovers (city_name, layover_code, country_name, description, currency, international, main_img_url, thumbnail_url)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-             [city_name, layover_code, country_name, description, currency, international, main_img_url, thumbnail_url]
-        )
-        console.log({result})
+            `INSERT INTO layovers (city_name, layover_code, country_name, description, currency, language, police, ambulance, international, main_img_url, thumbnail_url)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+             RETURNING *`,
+             [city_name, layover_code, country_name, description, currency, language, police, ambulance, international, main_img_url, thumbnail_url]
+        );
         const layover = result.rows[0];
         return layover;
     }

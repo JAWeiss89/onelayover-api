@@ -31,7 +31,9 @@ function authenticateJWT(req, res, next) {
 };
 
 function ensureLoggedIn(req, res, next) {
+    
     if (req.user) { // user key can only be added to req if token sent has been verified by authenticateJWT();
+        // console.log("Verified user is in request.")
         return next();
     } else { // if token was not verified by authenticateJWT() ...
         const unauthError = new ExpressError("Please log in or sign up to proceed", 401);
@@ -41,6 +43,7 @@ function ensureLoggedIn(req, res, next) {
 
 function ensureAdmin(req, res, next) {
     if (req.user.is_admin) {
+        // console.log("Verified user is admin.")
         return next();
     } else {
         const adminError = new ExpressError("Only admins can access this page", 401);

@@ -106,7 +106,7 @@ describe("GET /users/:userID", () => {
 describe("POST /users", () => {
     // no auth required
     test("Adds one user to database", async() => {
-        const newUser = {username: "sarita111", password: "mypw", first_name:"Sarira", last_name:"Ramirez", email:"myemail@email.com", airline:"united"};
+        const newUser = {username: "sarita111", password: "mypw", first_name:"Sarita", last_name:"Ramirez", email:"myemail@email.com", airline:"united"};
         const res = await request(app)
             .post("/users")
             .send({user: newUser});

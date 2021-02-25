@@ -98,6 +98,36 @@
             "examples": [
                 "aws.com/2"
             ]
+        },
+        "language": {
+            "$id": "#/properties/layover_code",
+            "type": "string",
+            "title": "The layover_code schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "ABC"
+            ]
+        },
+        "police": {
+            "$id": "#/properties/layover_code",
+            "type": "string",
+            "title": "The layover_code schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "ABC"
+            ]
+        },
+        "ambulance": {
+            "$id": "#/properties/layover_code",
+            "type": "string",
+            "title": "The layover_code schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "ABC"
+            ]
         }
     },
     "additionalProperties": false

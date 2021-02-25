@@ -31,15 +31,15 @@ router.post("/", ensureLoggedIn, ensureAdmin, async function(req, res, next) {
    // route expects layover in body with values for the following fields:
    // layover_code, city_name, country_name, description, currency ("3 char code"), international(t/f), main_img_url, thumbnail_url
     try {
+        
         const layoverData = req.body.layover;
         const validationResults = jsonschema.validate(layoverData, newLayoverSchema);
         if (!validationResults.valid) { // if json can't be validated
             const errors = validationResults.errors.map(error => error.stack);
             throw new ExpressError(errors, 400); // double check errors print as intended
         }
-        await Layover.createLayover(layoverData);
-        
-        return res.status(201).json({message: `Layover ${layoverData.layover_code}/${layoverData.city_name} was successfully created`});
+        const addedLayover = await Layover.createLayover(layoverData);
+        return res.status(201).json({message: `Layover ${addedLayover.layover_code}/${addedLayover.city_name} was successfully created`});
     } catch(err) {
         next(err);
     }
