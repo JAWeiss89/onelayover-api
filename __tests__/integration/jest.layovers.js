@@ -54,57 +54,57 @@ beforeEach(async() => {
 //   TESTS
 // ===============================
 
-// describe("SAMPLE ROUTE", () => {
-//     test("SAMPLE TEST", async() => {
-//         expect(1+1).toBe(2);
-//     });
-// });
+describe("SAMPLE ROUTE", () => {
+    test("SAMPLE TEST", async() => {
+        expect(1+1).toBe(2);
+    });
+});
 
-// describe("GET /layovers", () => {
-//     test("Gets all layovers if authenticated", async() => {
-//         const res = await request(app)
-//             .get("/layovers")
-//             .set({
-//                 _token: testNotAdminToken,
-//                 id: testUser.id
-//             });
-//         expect(res.statusCode).toBe(200);
-//         expect(res.body.layovers).toHaveLength(1);
-//         expect(res.body.layovers[0].city_name).toBe('Austin');
-//     });
-//     test("Does not get layovers if unauthenticated", async() => {
-//         const res = await request(app)
-//             .get("/layovers");
-//         expect(res.statusCode).toBe(401);
-//     });
-// });
+describe("GET /layovers", () => {
+    test("Gets all layovers if authenticated", async() => {
+        const res = await request(app)
+            .get("/layovers")
+            .set({
+                _token: testNotAdminToken,
+                id: testUser.id
+            });
+        expect(res.statusCode).toBe(200);
+        expect(res.body.layovers).toHaveLength(1);
+        expect(res.body.layovers[0].city_name).toBe('Austin');
+    });
+    test("Does not get layovers if unauthenticated", async() => {
+        const res = await request(app)
+            .get("/layovers");
+        expect(res.statusCode).toBe(401);
+    });
+});
 
-// describe("GET /layovers/:layoverCode", () => {
-//     test("Gets layover if authenticated", async() => {
-//         const res = await request(app)
-//             .get(`/layovers/${testLayover.layover_code}`)
-//             .set({
-//                 _token: testNotAdminToken,
-//                 id: testUser.id 
-//             });
-//         expect(res.statusCode).toBe(200);
-//         expect(res.body.layover.city_name).toBe('Austin');
-//     });
-//     test("Does not get layover if unauthenticated", async() => {
-//         const res = await request(app)
-//             .get(`/layovers/${testLayover.layover_code}`);
-//         expect(res.statusCode).toBe(401);
-//     });
-//     test("Returns 404 if no such layover", async() => {
-//         const res = await request(app)
-//             .get(`/layovers/abc`)
-//             .set({
-//                 _token: testNotAdminToken,
-//                 id: testUser.id 
-//             });
-//         expect(res.statusCode).toBe(404);
-//     });
-// });
+describe("GET /layovers/:layoverCode", () => {
+    test("Gets layover if authenticated", async() => {
+        const res = await request(app)
+            .get(`/layovers/${testLayover.layover_code}`)
+            .set({
+                _token: testNotAdminToken,
+                id: testUser.id 
+            });
+        expect(res.statusCode).toBe(200);
+        expect(res.body.layover.city_name).toBe('Austin');
+    });
+    test("Does not get layover if unauthenticated", async() => {
+        const res = await request(app)
+            .get(`/layovers/${testLayover.layover_code}`);
+        expect(res.statusCode).toBe(401);
+    });
+    test("Returns 404 if no such layover", async() => {
+        const res = await request(app)
+            .get(`/layovers/abc`)
+            .set({
+                _token: testNotAdminToken,
+                id: testUser.id 
+            });
+        expect(res.statusCode).toBe(404);
+    });
+});
 
 describe("POST /layovers", () => {
     test("Creates a new layover if admin and request body meets requirements", async () => {
@@ -158,6 +158,54 @@ describe("PATCH /layovers/:layoverCode", () => {
             .patch(`/layovers/${testLayover.layover_code}`)
             .send({ layover: updatedLayover, _token: testAdminToken });
         expect(res.statusCode).toBe(200);
+        const res2 = await request(app)
+            .get(`/layovers/${testLayover.layover_code}`)
+            .set({
+                _token: testNotAdminToken,
+                id: testUser.id
+            });
+        expect(res2.body.layover.description).toBe('Energy Capital of the world');
+    });
+    test("Doesn't update if not admin", async () => {
+        const updatedLayover = { description: 'Energy Capital of the world', language: 'spanish' }
+        const res = await request(app)
+            .patch(`/layovers/${testLayover.layover_code}`)
+            .send({ layover: updatedLayover, _token: testNotAdminToken });
+        expect(res.statusCode).toBe(401);
+        const res2 = await request(app)
+            .get(`/layovers/${testLayover.layover_code}`)
+            .set({
+                _token: testNotAdminToken,
+                id: testUser.id
+            });
+        expect(res2.body.layover.description).toBe('Live Music Capital of the World');
+    });
+});
+
+describe("DELETE /layovers/:layoverCode", () => {
+    test("Deletes layover if admin", async () => {
+        const res = await request(app)
+            .delete(`/layovers/${testLayover.layover_code}`)
+            .set({
+                _token: testAdminToken,
+                id: testUser.id
+            });
+        const res2 = await request(app)
+            .get("/layovers")
+            .set({
+                _token: testNotAdminToken,
+                id: testUser.id
+            });
+        expect(res2.body.layovers).toHaveLength(0);
+    });
+    test("Delete fails if not admin", async () => {
+        const res = await request(app)
+            .delete(`/layovers/${testLayover.layover_code}`)
+            .set({
+                _token: testNotAdminToken,
+                id: testUser.id
+            });
+        expect(res.statusCode).toBe(401);
         const res2 = await request(app)
             .get("/layovers")
             .set({
