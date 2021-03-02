@@ -60,11 +60,12 @@ router.patch("/:layoverCode/activities/:id", ensureLoggedIn, ensureSameUser, asy
     // 3) _token: "mytoken.aa.cc"     (for authentication)
 
     try {
-        const { id } = req.params;
+        const id = Number(req.params.id);
         const userID = req.body.userID;
         const activityData = req.body.activity;
         const validationResults = jsonschema.validate(activityData, editActivitySchema);
         if (!validationResults.valid) {
+            console.log("Request body could not be validated");
             const errors = validationResults.erros.map(error => error.stack);
             throw new ExpressError(errors, 400) // add invalid request error code
         }
@@ -83,7 +84,7 @@ router.delete("/:layoverCode/activities/:id", ensureLoggedIn, ensureSameUser, as
         const { id } = req.params;
         const { userID } = req.body;
         const {title} = await Activity.deleteActivity(id, userID);
-        return res.json({message: `Successfuly deleted activity ${title}`});
+        return res.json({message: `Successfully deleted activity ${title}`});
     } catch(err) {
         next(err);
     }

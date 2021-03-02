@@ -9,9 +9,7 @@ class Activity {
              FROM activities
              WHERE layover_code = $1`, [layoverCode]
         )
-        console.log({layoverCode})
         const activities = activityResults.rows;
-        console.log({activities})
         return activities;
     }
 
@@ -20,7 +18,7 @@ class Activity {
             `SELECT * FROM activities WHERE id = $1`, [activityID]
         )
         if (activityResult.rows.length === 0) {
-            throw new ExpressError(`Could not find activity with id ${activityID}`)
+            throw new ExpressError(`Could not find activity with id ${activityID}`, 404);
         }
         return activityResult.rows[0];
     }
@@ -40,11 +38,10 @@ class Activity {
 
     static async  updateActivity(activityID, userID, activityData) {
         // the following two lines help ensure only the user that is requesting to update is the original author of activity
-        const activityResult = await db.query(`SELECT * FROM activities WHERE id = $1, author_id = $2`, [activityID, userID]);
+        const activityResult = await db.query(`SELECT * FROM activities WHERE id = $1 AND author_id = $2`, [activityID, userID]);
         if (activityResult.rows.length === 0) throw new ExpressError(`Could not find activity with ID ${activityID} and authorID ${userID}`, 404);
 
         const { query, values } = partialUpdate("activities", activityData, "id", activityID)
-
         const results = await db.query(query, values);
         if (results.rows.length === 0) {
             throw new ExpressError(`Could not find activity with ID ${activityID}.`, 404);

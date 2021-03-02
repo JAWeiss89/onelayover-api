@@ -227,7 +227,7 @@ afterEach(async () => {
     await db.query(`DELETE FROM layovers WHERE layover_code='aus'`);
     await db.query(`DELETE FROM layovers WHERE layover_code='iah'`);
 
-})
+});
 
 afterAll(async function() {
 
@@ -235,4 +235,4 @@ afterAll(async function() {
 
     // close db connection
     await db.end();
-})
+});
