@@ -14,7 +14,7 @@ const router = new express.Router();
 // ==========================================================
 
 router.get("/", ensureLoggedIn, ensureAdmin, async function(req, res, next) {
-    // route expects _token in body of request
+    // route expects _token in header of request
     try {
         const users = await User.getAll();
 
