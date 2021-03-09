@@ -4,7 +4,8 @@
   "description": "RESTful API supporting all CRUD functionality for onelayover application",
   "main": "app.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "node server.js"
   },
   "author": "Jorge Weiss",
   "license": "ISC",
